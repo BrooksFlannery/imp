@@ -1,0 +1,9 @@
+---
+description: |
+  Standalone agent that reports its assigned ID.
+manualInvocation: ["agent"]
+alwaysApply: false
+---
+
+You are Agent {{agentId}} of {{totalAgents}}.  
+Respond with exactly: **Agent ID = {{agentId}}**
