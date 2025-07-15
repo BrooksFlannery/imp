@@ -1,0 +1,73 @@
+# Phase Analyzer Script Technical Specification
+
+## 1. Overview
+
+A simple script that reads a spec file and tells us which phases to spawn next. No AI interpretation needed.
+
+## 2. Architecture Diagram
+
+```mermaid
+graph LR
+    Spec[Spec.mdx]
+    Analyzer[phase-analyzer.sh]
+    Spawner[spawner.sh]
+    
+    Spec --> Analyzer
+    Analyzer --> Spawner
+```
+
+## 3. Configuration
+
+None needed. Just reads .mdx files with phase headers.
+
+## 4. API / Protocol
+
+### Command Line
+```bash
+./phase-analyzer.sh "spec-file.mdx"
+# Returns: "Phase 1: Setup" "Phase 2: Backend"
+
+# Use with spawner
+./spawner.sh "spec-file.mdx" $(./phase-analyzer.sh "spec-file.mdx")
+```
+
+### Output
+Space-separated phase names, quoted for shell safety.
+
+### Exit Codes
+- `0`: Found phases to spawn
+- `1`: All phases complete
+- `2`: File not found
+
+## 5. Phases & Tasks
+
+### Phase 1: Basic Parser
+- [x] Parse markdown for phase headers (`### Phase X:`)
+- [x] Check task completion (`[ ]` vs `[x]`)
+- [x] Return incomplete phases in order
+- [x] Handle basic errors
+
+### Phase 2: Smart Dependencies
+- [ ] Detect parallel phases (same number, different letters)
+- [ ] Respect sequential dependencies (Phase 1 before Phase 2)
+- [ ] Return all phases that can be worked on now
+
+### Phase 3: Integration
+- [ ] Test with real spec files
+- [ ] Update spawner to use analyzer
+- [ ] Add error handling
+
+## 6. Testing Strategy
+
+Test with the existing test-spec.mdx file:
+```bash
+./phase-analyzer.sh test-spec.mdx
+# Should return Phase 1 and Phase 2a, 2b, 2c
+```
+
+## 7. Success Criteria
+
+- [ ] Correctly identifies next phases
+- [ ] Works with existing spawner
+- [ ] Handles errors gracefully
+- [ ] Simple and reliable

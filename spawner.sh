@@ -36,6 +36,19 @@ osascript -e 'tell application "Cursor" to activate' 2>&1 | tee -a "$LOG_FILE"
 sleep 0.5
 
 echo "[spawner] Looping through phases..." | tee -a "$LOG_FILE"
+
+# Determine which phase should get a new chat
+# If only one phase, it gets a new chat
+# If multiple phases, the one that comes first alphabetically gets a new chat
+if [ $# -eq 1 ]; then
+  # Only one phase - it gets a new chat
+  FIRST_PHASE="$1"
+else
+  # Multiple phases - find the one that comes first alphabetically
+  FIRST_PHASE=$(printf '%s\n' "$@" | sort | head -n1)
+fi
+echo "[spawner] Phase that will get new chat: $FIRST_PHASE" | tee -a "$LOG_FILE"
+
 # For each phase, we'll create a new tab and spawn an agent
 for PHASE_NAME in "$@"; do
   echo "[spawner] Setting up phase: $PHASE_NAME" | tee -a "$LOG_FILE"
@@ -55,13 +68,11 @@ for PHASE_NAME in "$@"; do
   pbpaste >> "$LOG_FILE"
 
   # Build AppleScript for this specific phase
-  if [ "$PHASE_NAME" = "$1" ]; then
-    # First phase: new chat + new tab
-    echo "[spawner] First phase detected - using Cmd+L then Cmd+T" | tee -a "$LOG_FILE"
+  if [[ "$PHASE_NAME" == *"a:"* ]] || [ "$PHASE_NAME" = "$FIRST_PHASE" ]; then
+    # Any phase ending with 'a:' (first in parallel group) or the alphabetically first phase: new chat
+    echo "[spawner] New chat phase detected - using Cmd+Shift+L for new chat" | tee -a "$LOG_FILE"
     PHASE_SCRIPT="tell application \"System Events\"
-  keystroke \"l\" using {command down}
-  delay 0.5
-  keystroke \"t\" using {command down}
+  keystroke \"l\" using {command down, shift down}
   delay 0.5
   keystroke \"v\" using {command down}
   delay 0.2
