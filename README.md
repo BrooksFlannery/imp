@@ -1,6 +1,8 @@
-# imp - Cursor Implementation Tool
+# imp - Cursor Implementation Tool **Version 0.1.0**
 
-## imp is a tool that automatically implements project specifications by spawning cursor AI agents to work on different phases of your project.
+imp is a tool that automatically implements project specifications by spawning Cursor AI agents to work on different phases of your project.
+
+## Quick Start
 
 ### 1. Setup
 
@@ -20,6 +22,15 @@ chmod +x ~/bin/imp
 # Add ~/bin to your PATH
 echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
+
+### Customize the agent prompt (optional)
+
+You can modify the implementation agent behavior by editing `implementation_agent_prompt.txt`. For example, to change the git workflow:
+
+Common customizations:
+- Change the git branch naming pattern
+- Modify commit message format
+- Adjust the git workflow commands
 ```
 
 ### 2. Format your spec files
@@ -71,6 +82,13 @@ That's it! `imp` will automatically:
 4. AI agents work through tasks, marking them `[x]` when done
 5. When a phase completes, the next phase starts automatically
 
+## Usage
+
+### Basic
+```bash
+imp "project.mdx"
+```
+
 ### Manual control
 ```bash
 # Run specific phases
@@ -88,8 +106,7 @@ imp "project.mdx" "Phase 2a: Backend" "Phase 2b: Frontend"
 - **"Script not executable"**: Run `chmod +x ~/bin/imp`
 - **"Cursor not found"**: Make sure Cursor is installed
 - **"Permission denied"**: Grant Terminal accessibility permissions
+- **Chat conflicts**: Close old Cursor chat tabs before running `imp`
 
-## Notes
-- Concurrent phases block each others ability to edit the spec doc.
-
-That's all you need to know! Just write your spec and run `imp`.
+## Issues
+- Concurrent phases currently block each other's ability to edit the spec document.
