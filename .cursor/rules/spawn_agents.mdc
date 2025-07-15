@@ -1,7 +1,0 @@
-@spawn_agents
-
-prompt: respond ONLY with "How many agents would you like to spawn?"
-
-run: ./spawner.sh {{number}}
-
-globs: []
