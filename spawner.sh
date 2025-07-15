@@ -11,9 +11,10 @@
 #    - Submit the prompt
 
 # Check if we have the required arguments
-if [ -z "$1" ] || [ -z "$2" ]; then
+if [ -z "$1" ]; then
   echo "Usage: $0 <spec_file_name> <phase_name1> [phase_name2] [phase_name3] ..."
   echo "Example: $0 'test-spec.mdx' 'Phase 2a: User Guide Generation' 'Phase 2b: Technical Specification Generation'"
+  echo "Or use automatic phase detection: $0 'test-spec.mdx'"
   exit 1
 fi
 
@@ -21,10 +22,45 @@ fi
 SPEC_NAME="$1"
 shift  # Remove the first argument, leaving only phase names
 
+# Check if spec file exists
+if [ ! -f "$SPEC_NAME" ]; then
+  echo "Error: Spec file '$SPEC_NAME' not found" >&2
+  exit 1
+fi
+
 # Set up logging to track what's happening
 LOG_FILE="spawner.log"
 echo "--- $(date) ---" >> "$LOG_FILE"
-echo "[spawner] Starting spawner.sh with spec: $SPEC_NAME and phases: $@" | tee -a "$LOG_FILE"
+echo "[spawner] Starting spawner.sh with spec: $SPEC_NAME" | tee -a "$LOG_FILE"
+
+# If no phase names provided, use phase-analyzer.sh to get them automatically
+if [ $# -eq 0 ]; then
+  echo "[spawner] No phases provided, using phase-analyzer.sh to detect phases..." | tee -a "$LOG_FILE"
+  
+  # Check if phase-analyzer.sh exists
+  if [ ! -f "./phase-analyzer.sh" ]; then
+    echo "Error: phase-analyzer.sh not found in current directory" >&2
+    exit 1
+  fi
+  
+  # Run phase-analyzer.sh and capture its output
+  PHASES_FROM_ANALYZER=$(./phase-analyzer.sh "$SPEC_NAME")
+  ANALYZER_EXIT_CODE=$?
+  
+  if [ $ANALYZER_EXIT_CODE -eq 1 ]; then
+    echo "All phases are complete. Nothing to spawn." | tee -a "$LOG_FILE"
+    exit 0
+  elif [ $ANALYZER_EXIT_CODE -ne 0 ]; then
+    echo "Error: phase-analyzer.sh failed with exit code $ANALYZER_EXIT_CODE" >&2
+    exit $ANALYZER_EXIT_CODE
+  fi
+  
+  # Convert the quoted phase names to arguments
+  eval "set -- $PHASES_FROM_ANALYZER"
+  echo "[spawner] Detected phases: $@" | tee -a "$LOG_FILE"
+fi
+
+echo "[spawner] Final phases to spawn: $@" | tee -a "$LOG_FILE"
 
 # Read the prompt template that will be customized for each agent
 echo "[spawner] Reading implementation_agent_prompt.txt..." | tee -a "$LOG_FILE"

@@ -9,7 +9,14 @@ Your job is to:
 For each task:
 - If it's already marked complete [x], skip it
 - If it's not complete [ ], work on it and mark it complete
-- If a task is too difficult, retry once, then ask for human help
+- If you come across a non trivial decision point, or a non trivial issue you will stop and explain the issue you are facing and the most likely solutions to the issue
 - Update the {SPEC_NAME} file directly
 
-When you're done with your phase, find the next phase name and call: ./spawner.sh "{SPEC_NAME}" "Next Phase Name"
+When you're done with your phase give me commands in this format:
+
+git checkout -b bf/{PHASE_NAME}
+git add .
+git commit -m "short commit message"
+git push origin bf/{PHASE_NAME}
+
+After we have pushed, find the next phase name and call: ./spawner.sh "{SPEC_NAME}" "Next Phase Name"
