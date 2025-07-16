@@ -19,16 +19,24 @@ graph LR
     Main -->|Check exists| Decision{IMP repo exists?}
     Decision -->|No| Init[imp-init.sh]
     Decision -->|Yes| Spawner[imp-spawner.sh]
-    Init -->|Analyzes spec + project| Plan[imp-plan.md]
-    Init -->|Creates| Phases[phase-*.md files]
-    Init -->|Auto calls| Spawner
-    Spawner -->|Parses| Plan
+    Init -->|Creates| Dir[.imp/imp-specname/]
+    Init -->|Calls| SpecAgent[Spec Analysis Agent]
+    SpecAgent -->|Analyzes| Spec[spec.md]
+    SpecAgent -->|Creates| Analysis[analysis.json]
+    SpecAgent -->|Calls| PlanAgent[Plan Generation Agent]
+    PlanAgent -->|Creates| Plan[plan.json]
+    PlanAgent -->|Calls| MermaidAgent[Mermaid Generation Agent]
+    MermaidAgent -->|Creates| Diagram[imp-plan.md]
+    MermaidAgent -->|Calls| PhaseAgent[Phase File Generator]
+    PhaseAgent -->|Creates| Phases[phase-*.md files]
+    PhaseAgent -->|Calls| Spawner
+    Spawner -->|Parses| Diagram
     Spawner -->|Spawns| Agent[Cursor Agent]
     
     Agent -->|Updates| PhaseFile[phase-*.md checklist]
     Agent -->|Tells user| Finish[imp-finish.sh]
     Finish -->|Git operations| Git[Git Repository]
-    Finish -->|Updates| Plan
+    Finish -->|Updates| Diagram
     Finish -->|Calls| Spawner
 ```
 
@@ -50,11 +58,9 @@ imp.sh <spec-file-path>
 ```bash
 imp-init.sh <spec-file-path>
 ```
-- Analyzes spec.md and current project state
-- Generates implementation plan with phases and dependencies
-- Creates imp-plan.md with Mermaid flowchart
-- Creates phase-*.md files from spec phases
-- Automatically calls imp-spawner.sh to start first wave of agents
+- Creates .imp directory if it doesn't exist
+- Creates imp-specname subdirectory based on spec filename
+- Spawns spec analysis agent to analyze spec and project state
 - Returns: 0 on success, 1 on failure
 
 #### imp-spawner.sh
@@ -86,17 +92,57 @@ imp-finish.sh <phase-name>
 
 ## 4. Phases & Tasks
 
-### Phase 1: Core Script Development
-- [ ] Create imp-init.sh with spec analysis logic
-- [ ] Implement project state analysis
-- [ ] Create implementation plan generation
-- [ ] Implement Mermaid diagram generation from plan
-- [ ] Create phase file template system
-- [ ] Add directory structure creation
-- [ ] Implement spec validation
-- [ ] Add error handling and logging
+### Phase 1: Basic Initialization
+- [ ] Create imp-init.sh with directory creation logic
+- [ ] Implement .imp directory creation if not exists
+- [ ] Create imp-specname subdirectory based on spec filename
+- [ ] Add basic error handling and validation
+- [ ] Ensure proper exit codes (0 success, 1 failure)
+- [ ] Add logging for directory operations
+- [ ] Validate spec file exists and is readable
+- [ ] Create basic directory structure template
 
-### Phase 2a: Spawner Implementation
+### Phase 2: Spec Analysis Agent System
+- [ ] Create spec-analysis-agent.sh spawning logic
+- [ ] Implement agent prompt generation for spec analysis
+- [ ] Add spec file parsing and content extraction
+- [ ] Create project state analysis agent prompts
+- [ ] Implement diff generation between current and desired state
+- [ ] Add agent result parsing and validation
+- [ ] Create analysis output format specification
+- [ ] Add error handling for agent failures
+
+### Phase 3: Implementation Plan Generation
+- [ ] Create plan-generation-agent.sh spawning logic
+- [ ] Implement analysis-to-plan conversion logic
+- [ ] Add phase dependency resolution algorithm
+- [ ] Create concurrent phase detection and grouping
+- [ ] Implement phase granularity optimization
+- [ ] Add plan validation and completeness checking
+- [ ] Create plan output format (JSON/YAML)
+- [ ] Add plan versioning and metadata
+
+### Phase 4: Mermaid Diagram Generation
+- [ ] Create mermaid-generation-agent.sh spawning logic
+- [ ] Implement plan-to-mermaid conversion
+- [ ] Add dependency graph visualization
+- [ ] Create status class assignment (incomplete by default)
+- [ ] Implement phase node generation with proper IDs
+- [ ] Add edge creation for dependencies
+- [ ] Create diagram validation and formatting
+- [ ] Add diagram versioning and update mechanisms
+
+### Phase 5: Phase File Creation
+- [ ] Create phase-file-generator.sh spawning logic
+- [ ] Implement plan-to-phase-files conversion
+- [ ] Add phase file template system
+- [ ] Create naming convention: "phase-number-phase-title.md"
+- [ ] Implement checklist generation from plan tasks
+- [ ] Add phase metadata and dependencies
+- [ ] Create phase file validation
+- [ ] Add phase file versioning
+
+### Phase 6: Spawner Implementation
 - [ ] Create imp-spawner.sh core spawning logic
 - [ ] Implement Mermaid parsing with regex
 - [ ] Add dependency resolution algorithm
@@ -106,7 +152,7 @@ imp-finish.sh <phase-name>
 - [ ] Create Cursor agent spawning
 - [ ] Add agent prompt generation
 
-### Phase 2b: Git Integration System
+### Phase 7: Git Integration System
 - [ ] Create imp-finish.sh git operations
 - [ ] Implement branch creation logic
 - [ ] Add change detection and staging
@@ -116,7 +162,7 @@ imp-finish.sh <phase-name>
 - [ ] Create rollback mechanisms
 - [ ] Add git status validation
 
-### Phase 3: User Interface Integration
+### Phase 8: User Interface Integration
 - [ ] Create Cursor UI approval dialog
 - [ ] Implement change summary generation
 - [ ] Add approval workflow integration
@@ -126,7 +172,7 @@ imp-finish.sh <phase-name>
 - [ ] Create error reporting interface
 - [ ] Add user preference configuration
 
-### Phase 4: Testing and Validation
+### Phase 9: Testing and Validation
 - [ ] Create unit tests for all scripts
 - [ ] Implement integration test suite
 - [ ] Add Mermaid parsing validation
