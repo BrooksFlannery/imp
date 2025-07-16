@@ -20,16 +20,12 @@ graph LR
     Decision -->|No| Init[imp-init.sh]
     Decision -->|Yes| Spawner[imp-spawner.sh]
     Init -->|Creates| Dir[.imp/imp-specname/]
-    Init -->|Calls| SpecAgent[Spec Analysis Agent]
-    SpecAgent -->|Analyzes| Spec[spec.md]
-    SpecAgent -->|Creates| Analysis[analysis.json]
-    SpecAgent -->|Calls| PlanAgent[Plan Generation Agent]
-    PlanAgent -->|Creates| Plan[plan.json]
-    PlanAgent -->|Calls| MermaidAgent[Mermaid Generation Agent]
-    MermaidAgent -->|Creates| Diagram[imp-plan.md]
-    MermaidAgent -->|Calls| PhaseAgent[Phase File Generator]
-    PhaseAgent -->|Creates| Phases[phase-*.md files]
-    PhaseAgent -->|Calls| Spawner
+    Init -->|Calls| PlanAgent[Combined Plan Generation Agent]
+    PlanAgent -->|Analyzes| Spec[spec.md]
+    PlanAgent -->|Creates| Analysis[analysis.json]
+    PlanAgent -->|Creates| Diagram[imp-plan.md]
+    PlanAgent -->|Creates| PhaseFile[phase-*.md checklist]
+    PlanAgent -->|Calls| Spawner
     Spawner -->|Parses| Diagram
     Spawner -->|Spawns| Agent[Cursor Agent]
     
@@ -60,7 +56,7 @@ imp-init.sh <spec-file-path>
 ```
 - Creates .imp directory if it doesn't exist
 - Creates imp-specname subdirectory based on spec filename
-- Spawns spec analysis agent to analyze spec and project state
+- Spawns combined plan generation agent to analyze spec and create implementation plan
 - Returns: 0 on success, 1 on failure
 
 #### imp-spawner.sh
@@ -93,7 +89,9 @@ imp-finish.sh <phase-name>
 ### Cursor Agent Spawning System
 The IMP system uses a sophisticated agent spawning mechanism to automate Cursor IDE interactions:
 
-#### Agent Prompt Template (`implementation_agent_prompt.txt`)
+#### Agent Prompt Templates
+- `imp-plan-prompt.txt` - Combined plan generation agent for analysis, mermaid, and phase file creation
+- `implementation_agent_prompt.txt` - Individual phase implementation agent
 - Template-based prompts with variable substitution
 - Uses `{SPEC_NAME}` and `{PHASE_NAME}` placeholders
 - Provides clear instructions for agent behavior and completion workflow
@@ -113,59 +111,43 @@ The IMP system uses a sophisticated agent spawning mechanism to automate Cursor 
 - **Phase Detection**: Can automatically detect incomplete phases
 - **Logging**: Comprehensive logging for debugging and monitoring
 
-## 4. Phases & Tasks
+## 4. Output Format Requirements
 
-### Phase 1: Basic Initialization ✅
-- [x] Create imp-init.sh with directory creation logic
-- [x] Implement .imp directory creation if not exists
-- [x] Create imp-specname subdirectory based on spec filename
-- [x] Add basic error handling and validation
-- [x] Ensure proper exit codes (0 success, 1 failure)
-- [x] Add logging for directory operations
-- [x] Validate spec file exists and is readable
-- [x] Create basic directory structure template
+### Combined Plan Generation Agent Output
+The combined plan generation agent (`imp-plan-prompt.txt`) creates two essential files:
 
-### Phase 2: Spec Analysis Agent System ✅
-- [x] Create spec-analysis-agent.sh spawning logic
-- [x] Implement agent prompt generation for spec analysis
-- [x] Add spec file parsing and content extraction
-- [x] Create project state analysis agent prompts
-- [x] Implement diff generation between current and desired state
-- [x] Add agent result parsing and validation
-- [x] Create analysis output format specification
-- [x] Add error handling for agent failures
+#### 1. Analysis JSON (.imp/imp-specname/analysis.json)
+```json
+{
+  "phases": [
+    {
+      "id": "1",
+      "title": "Phase Title",
+      "dependencies": [],
+      "items": [
+        "Item 1 description",
+        "Item 2 description",
+        "Item 3 description"
+      ]
+    }
+  ]
+}
+```
 
-### Phase 3: Implementation Plan Generation
-- [ ] Create plan-generation-agent.sh spawning logic
-- [ ] Implement analysis-to-plan conversion logic
-- [ ] Add phase dependency resolution algorithm
-- [ ] Create concurrent phase detection and grouping
-- [ ] Implement phase granularity optimization
-- [ ] Add plan validation and completeness checking
-- [ ] Create plan output format (JSON/YAML)
-- [ ] Add plan versioning and metadata
+#### 2. Mermaid Diagram (.imp/imp-specname/imp-plan.md)
+**CRITICAL**: Contains ONLY the Mermaid diagram wrapped in proper mermaid code fences:
+```mermaid
+flowchart TD
+  Phase1[Phase 1: Title]:::incomplete --> Phase2[Phase 2: Title]:::incomplete
+  %% Class Definitions
+  classDef incomplete fill:#fefcbf,stroke:#b7791f,stroke-width:2px,color:#744210
+  classDef inProgress fill:#bee3f8,stroke:#2b6cb0,stroke-width:2px,color:#2c5282
+  classDef complete fill:#c6f6d5,stroke:#2f855a,stroke-width:2px,color:#22543d
+```
 
-### Phase 4: Mermaid Diagram Generation
-- [ ] Create mermaid-generation-agent.sh spawning logic
-- [ ] Implement plan-to-mermaid conversion
-- [ ] Add dependency graph visualization
-- [ ] Create status class assignment (incomplete by default)
-- [ ] Implement phase node generation with proper IDs
-- [ ] Add edge creation for dependencies
-- [ ] Create diagram validation and formatting
-- [ ] Add diagram versioning and update mechanisms
+## 5. Phases & Tasks
 
-### Phase 5: Phase File Creation
-- [ ] Create phase-file-generator.sh spawning logic
-- [ ] Implement plan-to-phase-files conversion
-- [ ] Add phase file template system
-- [ ] Create naming convention: "phase-number-phase-title.md"
-- [ ] Implement checklist generation from plan tasks
-- [ ] Add phase metadata and dependencies
-- [ ] Create phase file validation
-- [ ] Add phase file versioning
-
-### Phase 6: Spawner Implementation
+### Phase 4: Spawner Implementation
 - [ ] Create imp-spawner.sh core spawning logic
 - [ ] Implement Mermaid parsing with regex
 - [ ] Add dependency resolution algorithm
@@ -175,7 +157,7 @@ The IMP system uses a sophisticated agent spawning mechanism to automate Cursor 
 - [ ] Create Cursor agent spawning
 - [ ] Add agent prompt generation
 
-### Phase 7: Git Integration System
+### Phase 5: Git Integration System
 - [ ] Create imp-finish.sh git operations
 - [ ] Implement branch creation logic
 - [ ] Add change detection and staging
@@ -185,7 +167,7 @@ The IMP system uses a sophisticated agent spawning mechanism to automate Cursor 
 - [ ] Create rollback mechanisms
 - [ ] Add git status validation
 
-### Phase 8: User Interface Integration
+### Phase 6: User Interface Integration
 - [ ] Create Cursor UI approval dialog
 - [ ] Implement change summary generation
 - [ ] Add approval workflow integration
@@ -195,7 +177,7 @@ The IMP system uses a sophisticated agent spawning mechanism to automate Cursor 
 - [ ] Create error reporting interface
 - [ ] Add user preference configuration
 
-### Phase 9: Testing and Validation
+### Phase 7: Testing and Validation
 - [ ] Create unit tests for all scripts
 - [ ] Implement integration test suite
 - [ ] Add Mermaid parsing validation
@@ -205,7 +187,7 @@ The IMP system uses a sophisticated agent spawning mechanism to automate Cursor 
 - [ ] Create error scenario testing
 - [ ] Add performance benchmarking
 
-## 5. Deployment
+## 6. Deployment
 
 ### Prerequisites
 - Git repository with remote configured
@@ -219,7 +201,7 @@ The IMP system uses a sophisticated agent spawning mechanism to automate Cursor 
 3. Test with sample specification
 4. Configure Cursor agent permissions
 
-## 6. Success Criteria
+## 7. Success Criteria
 
 ### Functional Requirements
 - [ ] Successfully analyze spec and create implementation plan

@@ -1,0 +1,16 @@
+Parsing: test-6-failed-status.md
+
+Parsed phases:
+  Phase1: Phase 1: Setup (complete)
+  Phase2: Phase 2: Build (failed)
+  Phase3: Phase 3: Alternative (incomplete)
+  Phase4: Phase 4: Deploy (incomplete)
+
+Dependencies:
+  Phase2 depends on Phase1
+  Phase3 depends on Phase1
+  Phase4 depends on Phase2
+  Phase4 depends on Phase3
+
+Eligible phases:
+  Phase3: Phase 3: Alternative 

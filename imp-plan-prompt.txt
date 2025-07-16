@@ -84,6 +84,39 @@ flowchart TD
 
 **NO ADDITIONAL TEXT** - just the mermaid code block with fences.
 
+### 3. Phase Files ({PHASES_DIR}/phase-*.md)
+**CRITICAL**: Create individual phase files in the phases directory. Each phase file MUST follow this exact format:
+
+**FILE NAMING CONVENTION:**
+- Use format: `phase-{id}-{title}.md`
+- Replace spaces with hyphens in title
+- Example: `phase-1-basic-initialization.md`
+
+**REQUIRED FORMAT FOR EACH PHASE FILE:**
+```markdown
+# Phase {id}: {title}
+
+## Dependencies
+- Phase {dependency_id}: {dependency_title} (if any dependencies)
+
+## Tasks
+- [ ] {task 1 description}
+- [ ] {task 2 description}
+- [ ] {task 3 description}
+- [ ] {task 4 description}
+- [ ] {task 5 description}
+- [ ] {task 6 description}
+- [ ] {task 7 description}
+- [ ] {task 8 description}
+```
+
+**PHASE FILE REQUIREMENTS:**
+- Each phase gets its own .md file
+- Use the exact checklist format with `- [ ]` for each task
+- Include dependencies section if the phase has dependencies
+- Convert phase items from analysis.json into individual checklist items
+- Ensure all tasks are actionable and specific
+
 ## Step-by-Step Instructions
 
 1. **Read and analyze the specification file carefully**
@@ -93,9 +126,13 @@ flowchart TD
 5. **Generate detailed tasks for each phase**
 6. **Create the analysis.json file with the exact format above**
 7. **Create the imp-plan.md file with ONLY the Mermaid diagram wrapped in mermaid fences**
-8. **Use the correct Mermaid syntax: `flowchart TD` with proper class definitions**
-9. **Be thorough but concise**
-10. **Focus on actionable implementation steps**
+8. **Create individual phase files in the phases directory**
+   - Use naming convention: `phase-{id}-{title}.md`
+   - Convert each phase's items into checklist format
+   - Include dependencies section if applicable
+9. **Use the correct Mermaid syntax: `flowchart TD` with proper class definitions**
+10. **Be thorough but concise**
+11. **Focus on actionable implementation steps**
 
 ## Final Validation Checklist
 
@@ -106,5 +143,9 @@ Before completing, verify:
 - [ ] Mermaid syntax uses `flowchart TD` with correct class definitions
 - [ ] Each phase has meaningful, actionable tasks
 - [ ] Dependencies are logically sound and complete
+- [ ] Phase files created in phases directory with correct naming convention
+- [ ] Each phase file follows the exact markdown format with checklist items
+- [ ] Dependencies section included in phase files where applicable
+- [ ] All phase items converted to actionable checklist tasks
 
-When you're done, tell me the plan generation is complete and provide the paths to both output files.
+When you're done, tell me the plan generation is complete and provide the paths to all output files (analysis.json, imp-plan.md, and all phase files).

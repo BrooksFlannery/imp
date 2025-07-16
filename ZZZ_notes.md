@@ -1,2 +1,3 @@
 - maybe better to generate mermaid and phases files using a bash script that parses analysis rather than rely on agents?(faster,cheaper, more reliable???)
 - in this more more graph based system, numbered phases seem wrong. often times we will have bigger numbers going before smaller numbers? maybe we just forgo numbers for description based names
+- it seems like it is trying to have specifically 8 items in each phase. that is not what we are shooting for. we could have a wide range of items in phases. some phases may have 12 some may have 2...

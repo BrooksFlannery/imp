@@ -1,0 +1,13 @@
+Parsing: test-1-simple-linear.md
+
+Parsed phases:
+  Phase1: Phase 1: Setup (incomplete)
+  Phase2: Phase 2: Build (incomplete)
+  Phase3: Phase 3: Deploy (incomplete)
+
+Dependencies:
+  Phase2 depends on Phase1
+  Phase3 depends on Phase2
+
+Eligible phases:
+  Phase1: Phase 1: Setup 

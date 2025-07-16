@@ -132,5 +132,6 @@ log "The agent prompt has been copied to your clipboard"
 log "Please paste it into Cursor and let the agent generate:"
 log "  - $SPEC_DIR/analysis.json"
 log "  - $SPEC_DIR/imp-plan.md"
+log "  - Phase files in: $SPEC_DIR/phases"
 
 exit 0 

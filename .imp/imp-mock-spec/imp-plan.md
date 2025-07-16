@@ -1,35 +1,17 @@
 ```mermaid
 flowchart TD
-  Phase1[Phase 1: Project Setup and Infrastructure]:::incomplete --> Phase2[Phase 2: Database Setup and Schema]:::incomplete
-  Phase1 --> Phase3[Phase 3: Backend Core Infrastructure]:::incomplete
-  Phase1 --> Phase7[Phase 7: Frontend Core Setup]:::incomplete
-  
-  Phase2 --> Phase4[Phase 4: Authentication System]:::incomplete
-  Phase3 --> Phase4
-  Phase3 --> Phase5[Phase 5: Task Management API]:::incomplete
-  Phase3 --> Phase6[Phase 6: WebSocket Real-time System]:::incomplete
-  
-  Phase2 --> Phase5
-  Phase4 --> Phase5
-  Phase4 --> Phase8[Phase 8: Frontend Authentication UI]:::incomplete
+  Phase1[Phase 1: Project Setup and Infrastructure]:::incomplete --> Phase2[Phase 2: Database and Authentication Foundation]:::incomplete
+  Phase1 --> Phase5[Phase 5: Frontend Foundation]:::incomplete
+  Phase2 --> Phase3[Phase 3: Core API Development]:::incomplete
+  Phase5 --> Phase6[Phase 6: Frontend Authentication and User Management]:::incomplete
+  Phase3 --> Phase4[Phase 4: WebSocket Real-time Implementation]:::incomplete
+  Phase6 --> Phase7[Phase 7: Frontend Task Management Interface]:::incomplete
+  Phase4 --> Phase8[Phase 8: Real-time Frontend Integration]:::incomplete
   Phase7 --> Phase8
-  
-  Phase5 --> Phase6
-  Phase5 --> Phase9[Phase 9: Frontend Task Management UI]:::incomplete
-  Phase7 --> Phase9
-  Phase8 --> Phase9
-  
-  Phase6 --> Phase10[Phase 10: Real-time Frontend Integration]:::incomplete
-  Phase7 --> Phase10
+  Phase7 --> Phase9[Phase 9: Responsive Design and UX]:::incomplete
+  Phase8 --> Phase10[Phase 10: Testing and Quality Assurance]:::incomplete
   Phase9 --> Phase10
-  
-  Phase4 --> Phase11[Phase 11: Testing and Quality Assurance]:::incomplete
-  Phase5 --> Phase11
-  Phase6 --> Phase11
-  Phase8 --> Phase11
-  Phase9 --> Phase11
-  Phase10 --> Phase11
-  
+  Phase10 --> Phase11[Phase 11: Performance Optimization]:::incomplete
   Phase11 --> Phase12[Phase 12: Deployment and CI/CD]:::incomplete
 
   %% Class Definitions

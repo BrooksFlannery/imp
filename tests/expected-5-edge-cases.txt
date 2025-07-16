@@ -1,0 +1,17 @@
+Parsing: test-5-edge-cases.md
+
+Parsed phases:
+  Phase1: Phase 1: Start (incomplete)
+  Phase2: Phase2 (incomplete)
+  Phase3: Phase 3: Middle (incomplete)
+  Phase4: Phase4 (incomplete)
+  Phase5: Phase 5: End (complete)
+
+Dependencies:
+  Phase2 depends on Phase1
+  Phase3 depends on Phase2
+  Phase4 depends on Phase3
+  Phase5 depends on Phase4
+
+Eligible phases:
+  Phase1: Phase 1: Start 

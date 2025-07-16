@@ -88,10 +88,12 @@ log "Starting plan generation for: $SPEC_FILE"
 # Define output file paths
 ANALYSIS_JSON_FILE="$SPEC_DIR/analysis.json"
 MERMAID_FILE="$SPEC_DIR/imp-plan.md"
+PHASES_DIR="$SPEC_DIR/phases"
 
 log "Output files:"
 log "  JSON Plan: $ANALYSIS_JSON_FILE"
 log "  Mermaid: $MERMAID_FILE"
+log "  Phase Files: $PHASES_DIR"
 
 # Use the existing plan generation prompt file
 PLAN_GENERATION_PROMPT_FILE="imp-plan-prompt.txt"
@@ -106,7 +108,8 @@ log "Using plan generation prompt file: $PLAN_GENERATION_PROMPT_FILE"
 PLAN_GENERATION_PROMPT=$(cat "$PLAN_GENERATION_PROMPT_FILE" | \
     sed "s|{SPEC_FILE}|$SPEC_FILE|g" | \
     sed "s|{ANALYSIS_JSON_FILE}|$ANALYSIS_JSON_FILE|g" | \
-    sed "s|{MERMAID_FILE}|$MERMAID_FILE|g")
+    sed "s|{MERMAID_FILE}|$MERMAID_FILE|g" | \
+    sed "s|{PHASES_DIR}|$PHASES_DIR|g")
 
 # Copy the prompt to clipboard
 echo "$PLAN_GENERATION_PROMPT" | pbcopy
@@ -145,5 +148,6 @@ log "Please paste the prompt and let the agent generate the files"
 log "Files will be created at:"
 log "  - $ANALYSIS_JSON_FILE"
 log "  - $MERMAID_FILE"
+log "  - Phase files in: $PHASES_DIR"
 
 exit 0 
