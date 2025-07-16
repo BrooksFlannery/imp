@@ -90,27 +90,50 @@ imp-finish.sh <phase-name>
 - `:::complete` - Phase finished and approved
 - `:::failed` - Phase failed (unused for now)
 
+### Cursor Agent Spawning System
+The IMP system uses a sophisticated agent spawning mechanism to automate Cursor IDE interactions:
+
+#### Agent Prompt Template (`implementation_agent_prompt.txt`)
+- Template-based prompts with variable substitution
+- Uses `{SPEC_NAME}` and `{PHASE_NAME}` placeholders
+- Provides clear instructions for agent behavior and completion workflow
+
+#### Spawner Script (`spawner.sh`)
+- Uses AppleScript to automate Cursor IDE
+- Creates new chat tabs programmatically
+- Sets clipboard with customized agent prompts
+- Supports both manual phase specification and automatic phase detection
+- Handles multiple concurrent agents with proper timing
+
+#### Key Features:
+- **Dynamic Prompt Generation**: Substitutes variables in prompt templates
+- **Automated Cursor Control**: Uses `osascript` to control Cursor IDE
+- **Clipboard Integration**: Uses `pbcopy`/`pbpaste` for prompt transfer
+- **Concurrent Agent Management**: Spawns multiple agents in separate tabs
+- **Phase Detection**: Can automatically detect incomplete phases
+- **Logging**: Comprehensive logging for debugging and monitoring
+
 ## 4. Phases & Tasks
 
-### Phase 1: Basic Initialization
-- [ ] Create imp-init.sh with directory creation logic
-- [ ] Implement .imp directory creation if not exists
-- [ ] Create imp-specname subdirectory based on spec filename
-- [ ] Add basic error handling and validation
-- [ ] Ensure proper exit codes (0 success, 1 failure)
-- [ ] Add logging for directory operations
-- [ ] Validate spec file exists and is readable
-- [ ] Create basic directory structure template
+### Phase 1: Basic Initialization ✅
+- [x] Create imp-init.sh with directory creation logic
+- [x] Implement .imp directory creation if not exists
+- [x] Create imp-specname subdirectory based on spec filename
+- [x] Add basic error handling and validation
+- [x] Ensure proper exit codes (0 success, 1 failure)
+- [x] Add logging for directory operations
+- [x] Validate spec file exists and is readable
+- [x] Create basic directory structure template
 
-### Phase 2: Spec Analysis Agent System
-- [ ] Create spec-analysis-agent.sh spawning logic
-- [ ] Implement agent prompt generation for spec analysis
-- [ ] Add spec file parsing and content extraction
-- [ ] Create project state analysis agent prompts
-- [ ] Implement diff generation between current and desired state
-- [ ] Add agent result parsing and validation
-- [ ] Create analysis output format specification
-- [ ] Add error handling for agent failures
+### Phase 2: Spec Analysis Agent System ✅
+- [x] Create spec-analysis-agent.sh spawning logic
+- [x] Implement agent prompt generation for spec analysis
+- [x] Add spec file parsing and content extraction
+- [x] Create project state analysis agent prompts
+- [x] Implement diff generation between current and desired state
+- [x] Add agent result parsing and validation
+- [x] Create analysis output format specification
+- [x] Add error handling for agent failures
 
 ### Phase 3: Implementation Plan Generation
 - [ ] Create plan-generation-agent.sh spawning logic

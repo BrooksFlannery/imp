@@ -1,0 +1,2 @@
+- maybe better to generate mermaid and phases files using a bash script that parses analysis rather than rely on agents?(faster,cheaper, more reliable???)
+- in this more more graph based system, numbered phases seem wrong. often times we will have bigger numbers going before smaller numbers? maybe we just forgo numbers for description based names

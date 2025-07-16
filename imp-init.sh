@@ -101,35 +101,8 @@ fi
 
 # Create basic directory structure
 log "Creating basic directory structure"
-mkdir -p "$SPEC_DIR/analysis"
-mkdir -p "$SPEC_DIR/plans"
 mkdir -p "$SPEC_DIR/phases"
 mkdir -p "$SPEC_DIR/logs"
-
-# Create a basic README for the spec directory
-cat > "$SPEC_DIR/README.md" << EOF
-# IMP Implementation: $SPEC_NAME
-
-Generated on: $(date)
-
-## Directory Structure
-- \`analysis/\` - Spec analysis results
-- \`plans/\` - Implementation plans
-- \`phases/\` - Individual phase files
-- \`logs/\` - Implementation logs
-
-## Original Spec
-- File: $SPEC_FILE_ABS
-- Name: $SPEC_NAME
-
-## Status
-- Initialization: Complete
-- Spec Analysis: Pending
-- Plan Generation: Pending
-- Phase Creation: Pending
-EOF
-
-success "Created README.md for spec directory"
 
 # Store spec file path for future reference
 echo "$SPEC_FILE_ABS" > "$SPEC_DIR/spec-path.txt"
@@ -150,8 +123,14 @@ success "Created configuration file"
 log "Phase 1 initialization complete"
 success "Ready for spec analysis"
 
-# TODO: Phase 2 - Spawn spec analysis agent
-# This will be implemented in the next phase
-log "Next step: Spawn spec analysis agent (Phase 2)"
+# Spawn plan generation agent
+log "Spawning plan generation agent..."
+./imp-plan.sh "$SPEC_DIR"
+
+success "Plan generation agent spawned"
+log "The agent prompt has been copied to your clipboard"
+log "Please paste it into Cursor and let the agent generate:"
+log "  - $SPEC_DIR/analysis.json"
+log "  - $SPEC_DIR/imp-plan.md"
 
 exit 0 
