@@ -166,12 +166,40 @@ check_cursor() {
 validate_environment() {
     log "Validating IMP environment..."
     
-    check_git_repo
     check_dependencies
     check_imp_files
     check_cursor
     
     success "Environment validation complete"
+}
+
+# Function to check git setup and prompt user if needed
+check_git_setup() {
+    # Check if we're in a git repository
+    if [ ! -d ".git" ]; then
+        warning "Git repository not found in current directory"
+        echo ""
+        read -p "Git not found. Do you want to stop and set up git/github? (y/N): " -n 1 -r
+        echo ""
+        
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            info "Please set up git and github for your project, then rerun: imp $1"
+            info "To set up git:"
+            info "  1. git init"
+            info "  2. git add ."
+            info "  3. git commit -m 'Initial commit'"
+            info "  4. Create repository on GitHub"
+            info "  5. git remote add origin <your-repo-url>"
+            info "  6. git push -u origin main"
+            exit 0
+        else
+            info "Continuing without git integration"
+            return 1  # Indicate git not available
+        fi
+    else
+        success "Git repository detected"
+        return 0  # Indicate git is available
+    fi
 }
 
 # New handler for spec-compliant flow
@@ -189,6 +217,17 @@ handle_spec_file() {
         exit 1
     fi
 
+    # Check git setup and get result
+    local git_available
+    if check_git_setup "$spec_file"; then
+        git_available=1  # Git is available
+    else
+        git_available=0  # Git is not available
+    fi
+    
+    # Store git availability for later use (we'll pass this to other scripts)
+    export IMP_GIT_AVAILABLE=$git_available
+    
     # Get absolute path of spec file
     local spec_file_abs=$(realpath "$spec_file")
     
@@ -312,6 +351,17 @@ handle_finish() {
         echo "  3. Spawn agents for new eligible phases"
         exit 0
     fi
+    
+    # Check git setup and get result (same as in handle_spec_file)
+    local git_available
+    if check_git_setup "finish"; then
+        git_available=1  # Git is available
+    else
+        git_available=0  # Git is not available
+    fi
+    
+    # Store git availability for later use
+    export IMP_GIT_AVAILABLE=$git_available
     
     log "Marking phase as complete: $1"
     "$IMP_DIR/imp-finish.sh" "$1" "$2"

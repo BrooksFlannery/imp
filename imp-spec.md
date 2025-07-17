@@ -7,16 +7,23 @@ IMP is an automated project implementation system that manages multi-phase techn
 **Key Features:**
 - Automated spec analysis and phase dependency resolution
 - Mermaid-based visual progress tracking with status classes
-- Git branch isolation per phase with user approval workflow
+- **Optional git integration with conditional workflow**
+- Git branch isolation per phase with user approval workflow (when git is available)
 - Concurrent phase execution with race condition prevention
 - Single source of truth state management via Mermaid diagram
+- **Flexible deployment: works with or without git setup**
 
 ## 2. Architecture Diagram
 
 ```mermaid
-graph LR
+flowchart TD
     User[User Terminal] -->|imp spec.md| Main[imp.sh]
-    Main -->|Check exists| Decision{IMP repo exists?}
+    Main -->|Check git| GitCheck{Git exists?}
+    GitCheck -->|No| GitPrompt{User wants git?}
+    GitPrompt -->|Yes| Stop[Stop: Setup git first]
+    GitPrompt -->|No| Continue[Continue]
+    GitCheck -->|Yes| Continue
+    Continue -->|Check exists| Decision{IMP repo exists?}
     Decision -->|No| Init[imp-init.sh]
     Decision -->|Yes| Spawner[imp-spawner.sh]
     Init -->|Creates| Dir[.imp/imp-specname/]
@@ -31,9 +38,12 @@ graph LR
     
     Agent -->|Updates| PhaseFile[phase-*.md checklist]
     Agent -->|Tells user| Finish[imp-finish.sh]
-    Finish -->|Git operations| Git[Git Repository]
-    Finish -->|Updates| Diagram
-    Finish -->|Calls| Spawner
+    Finish -->|Git check| GitExists{Git available?}
+    GitExists -->|Yes| GitOps[Git operations]
+    GitExists -->|No| SkipGit[Skip git operations]
+    GitOps -->|Updates| Diagram
+    SkipGit -->|Updates| Diagram
+    Diagram -->|Calls| Spawner
 ```
 
 ## 3. API / Protocol
@@ -45,6 +55,10 @@ graph LR
 imp.sh <spec-file-path>
 ```
 - Main entry point script
+- **NEW: Checks if git repository exists in project**
+- **NEW: If no git, prompts user: "Git not found. Do you want to stop and set up git/github? (y/N)"**
+- **NEW: If user chooses 'y', stops and instructs to rerun after git setup**
+- **NEW: If user chooses 'N' or no input, continues without git**
 - Checks if IMP repository already exists
 - If exists: calls imp-spawner.sh directly
 - If not exists: calls imp-init.sh (which then calls imp-spawner.sh)
@@ -73,12 +87,33 @@ imp-spawner.sh
 ```bash
 imp-finish.sh <phase-name>
 ```
-- Creates git branch: imp/phase-name
-- Commits phase changes
-- Pushes to remote
+- **NEW: Checks if git setup is available**
+- **NEW: If git available:**
+  - Creates git branch: imp/phase-name
+  - Commits phase changes
+  - Pushes to remote
+  - Creates pull request (if GitHub CLI available)
+- **NEW: If git not available:**
+  - Skips all git operations
+  - Continues with phase completion workflow
 - Updates phase status from `inProgress` to `complete` in imp-plan.md
 - Calls imp-spawner.sh to spawn new eligible phases
 - Returns: 0 on success, 1 on failure
+
+### Git Integration Requirements
+
+#### Git Detection Logic
+- **Primary Check**: Detect if `.git` directory exists in project root
+- **User Prompt**: If no git found, ask: "Git not found. Do you want to stop and set up git/github? (y/N)"
+- **Default Behavior**: Continue without git if user chooses 'N' or provides no input
+- **Graceful Degradation**: All git operations are conditional and non-blocking
+
+#### Conditional Git Operations in Finish Command
+- **Git Validation**: Only validate git setup if git operations are requested
+- **Branch Creation**: Only create branches if git repository exists
+- **Commit/Push**: Only perform git operations if git is properly configured
+- **PR Creation**: Only attempt PR creation if GitHub CLI is available
+- **Error Handling**: No errors should occur if git setup is missing
 
 ### Mermaid Status Classes
 - `:::incomplete` - Phase not started (default state)
@@ -148,14 +183,14 @@ flowchart TD
 ## 6. Deployment
 
 ### Prerequisites
-- Git repository with remote configured
+- **Optional**: Git repository with remote configured (for full git workflow)
 - Cursor IDE with agent capabilities
 - Bash shell environment
 - Read/write permissions for IMP directories
 
 ### Installation
 1. Clone IMP repository to local machine
-2. Set up git remote configuration
+2. **Optional**: Set up git remote configuration (for git workflow)
 3. Test with sample specification
 4. Configure Cursor agent permissions
 
@@ -164,11 +199,14 @@ flowchart TD
 ### Functional Requirements
 - [ ] Successfully analyze spec and create implementation plan
 - [ ] Automatically spawn agents for eligible phases
-- [ ] Maintain proper git branch isolation per phase
+- [ ] **NEW: Detect git setup and provide user choice to continue or stop**
+- [ ] **NEW: Work seamlessly with or without git repository**
+- [ ] Maintain proper git branch isolation per phase (when git available)
 - [ ] Update Mermaid diagrams with correct status classes
 - [ ] Handle concurrent phase execution without conflicts
 - [ ] Provide user approval workflow for phase completion
 - [ ] Support both sequential and parallel phase dependencies
+- [ ] **NEW: Conditional git operations that don't fail when git is unavailable**
 
 ### Quality Requirements
 - [ ] Zero data loss during phase transitions
@@ -176,3 +214,4 @@ flowchart TD
 - [ ] Proper error handling for all failure scenarios
 - [ ] Clear logging for debugging and monitoring
 - [ ] User-friendly error messages and recovery options
+- [ ] **NEW: Graceful degradation when git features are unavailable**
