@@ -449,17 +449,9 @@ main() {
     local phase_name="$1"
     local imp_path="$2"
     
-    echo "IMP Finish: $phase_name"
-    echo "Path: $imp_path"
-    echo ""
-    
-    # Debug: Show git availability
-    echo "DEBUG: IMP_GIT_AVAILABLE = '$IMP_GIT_AVAILABLE'"
-    echo "DEBUG: IMP_DEBUG = '$DEBUG'"
-    
     # Validate git setup first (this will return early if git is disabled)
     debug "Calling validate_git_setup..."
-    validate_git_setup
+    validate_git_setup || true  # Don't exit on failure - git being disabled is expected
     local git_available=$?
     debug "Git setup validation result: $git_available"
     
