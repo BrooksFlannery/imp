@@ -145,48 +145,6 @@ flowchart TD
   classDef complete fill:#c6f6d5,stroke:#2f855a,stroke-width:2px,color:#22543d
 ```
 
-## 5. Phases & Tasks
-
-### Phase 4: Spawner Implementation
-- [ ] Create imp-spawner.sh core spawning logic
-- [ ] Implement Mermaid parsing with regex
-- [ ] Add dependency resolution algorithm
-- [ ] Create phase eligibility checking
-- [ ] Implement status class updates
-- [ ] Add concurrent phase safety checks
-- [ ] Create Cursor agent spawning
-- [ ] Add agent prompt generation
-
-### Phase 5: Git Integration System
-- [ ] Create imp-finish.sh git operations
-- [ ] Implement branch creation logic
-- [ ] Add change detection and staging
-- [ ] Create commit message generation
-- [ ] Implement push to remote
-- [ ] Add conflict detection
-- [ ] Create rollback mechanisms
-- [ ] Add git status validation
-
-### Phase 6: User Interface Integration
-- [ ] Create Cursor UI approval dialog
-- [ ] Implement change summary generation
-- [ ] Add approval workflow integration
-- [ ] Create progress visualization
-- [ ] Implement real-time status updates
-- [ ] Add manual phase management
-- [ ] Create error reporting interface
-- [ ] Add user preference configuration
-
-### Phase 7: Testing and Validation
-- [ ] Create unit tests for all scripts
-- [ ] Implement integration test suite
-- [ ] Add Mermaid parsing validation
-- [ ] Create git workflow testing
-- [ ] Implement agent isolation testing
-- [ ] Add concurrent execution testing
-- [ ] Create error scenario testing
-- [ ] Add performance benchmarking
-
 ## 6. Deployment
 
 ### Prerequisites

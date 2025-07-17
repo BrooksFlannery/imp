@@ -125,7 +125,9 @@ success "Ready for spec analysis"
 
 # Spawn plan generation agent
 log "Spawning plan generation agent..."
-./imp-plan.sh "$SPEC_DIR"
+# Get IMP directory (where this script is located)
+IMP_DIR=$(dirname "$(realpath "$0")")
+"$IMP_DIR/imp-plan.sh" "$SPEC_DIR"
 
 success "Plan generation agent spawned"
 log "The agent prompt has been copied to your clipboard"

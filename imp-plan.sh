@@ -96,7 +96,9 @@ log "  Mermaid: $MERMAID_FILE"
 log "  Phase Files: $PHASES_DIR"
 
 # Use the existing plan generation prompt file
-PLAN_GENERATION_PROMPT_FILE="imp-plan-prompt.txt"
+# Get IMP directory (where this script is located)
+IMP_DIR=$(dirname "$(realpath "$0")")
+PLAN_GENERATION_PROMPT_FILE="$IMP_DIR/imp-plan-prompt.txt"
 if [ ! -f "$PLAN_GENERATION_PROMPT_FILE" ]; then
     error "Plan generation prompt file not found: $PLAN_GENERATION_PROMPT_FILE"
     exit 1

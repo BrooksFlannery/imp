@@ -148,4 +148,28 @@ Before completing, verify:
 - [ ] Dependencies section included in phase files where applicable
 - [ ] All phase items converted to actionable checklist tasks
 
-When you're done, tell me the plan generation is complete and provide the paths to all output files (analysis.json, imp-plan.md, and all phase files).
+## Post-Generation Actions
+
+**CRITICAL**: After successfully creating all files, you MUST execute the following command to spawn implementation agents:
+
+```bash
+imp spawn {MERMAID_FILE}
+```
+
+This command will:
+- Parse the Mermaid diagram you just created
+- Identify eligible phases (no dependencies or all dependencies complete)
+- Spawn Cursor agents for each eligible phase
+- Update phase statuses to "inProgress"
+
+**DO NOT SKIP THIS STEP** - it's essential for the automated workflow to continue.
+
+## Completion Message
+
+When you're done, tell me:
+1. "Plan generation is complete"
+2. Provide the paths to all output files (analysis.json, imp-plan.md, and all phase files)
+3. Execute the imp spawn command as shown above
+4. Confirm that agents have been spawned for eligible phases
+
+Example completion message:
