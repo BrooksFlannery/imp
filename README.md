@@ -33,21 +33,6 @@ This will automatically:
 - Add the `imp` alias to your shell config
 - Validate the installation
 
-### Option 2: Manual Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/brooksflannery/imp.git
-# The clone creates a directory called "imp" - navigate into it
-cd imp
-
-# Add alias to your shell config (replace with your actual path)
-echo 'alias imp="/path/to/imp/imp.sh"' >> ~/.zshrc
-
-# Reload shell config
-source ~/.zshrc
-```
-
 ## Usage
 
 Once installed, you can use `imp` from any project directory:
@@ -120,6 +105,8 @@ imp/
 ├── imp-spawner.sh      # Agent spawning script
 ├── imp-finish.sh       # Phase completion script
 ├── install.sh          # Installation script
+├── uninstall.sh        # Uninstall script
+├── install-one-liner.sh # One-liner installer
 ├── imp-agent.prompt    # Agent prompt template
 ├── imp-plan-prompt.txt # Plan generation prompt
 └── README.md           # This file
@@ -165,4 +152,4 @@ You can always reinstall later using the one-liner installation command.
 
 ## License
 
-[Add your license here] 
+MIT License - see [LICENSE](LICENSE) file for details. 

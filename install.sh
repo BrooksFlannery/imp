@@ -126,7 +126,12 @@ install_alias() {
     
     # Reload shell config
     log "Reloading shell configuration..."
-    source "$config_file"
+    # Only try to source if we're in the same shell type
+    if [[ "$SHELL" == */zsh && -n "$ZSH_VERSION" ]] || [[ "$SHELL" == */bash && -n "$BASH_VERSION" ]]; then
+        source "$config_file" 2>/dev/null || true
+    else
+        log "Skipping shell config reload (different shell type)"
+    fi
     
     success "IMP alias installed successfully!"
     log "You can now use 'imp' from any project directory"

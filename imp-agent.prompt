@@ -19,6 +19,10 @@ When you're done with your phase, run this command:
 
 This command will:
    - Update the phase status in the Mermaid diagram to complete
+   - Create git branch: imp/phase-name
+   - Commit all changes with standard message
+   - Push branch to origin
+   - Create pull request (if GitHub CLI available)
    - Automatically spawn agents for the next eligible phases
 
 Important Notes:
@@ -27,5 +31,6 @@ Important Notes:
 - If you encounter errors or need clarification, ask for help
 - The IMP system will automatically manage dependencies and spawn the next phases
 - Always use the imp finish command to complete your phase properly
+- The git workflow is fully automated - no manual git commands needed
 
 Your phase file is located at: .imp/{IMP_DIR}/phases/{PHASE_FILE} 
