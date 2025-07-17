@@ -1,0 +1,16 @@
+Parsing: test-2-parallel-phases.md
+
+Parsed phases:
+  Phase1: Phase 1: Setup (incomplete)
+  Phase2: Phase 2: Backend (incomplete)
+  Phase3: Phase 3: Frontend (incomplete)
+  Phase4: Phase 4: Integration (incomplete)
+
+Dependencies:
+  Phase2 depends on Phase1
+  Phase3 depends on Phase1
+  Phase4 depends on Phase2
+  Phase4 depends on Phase3
+
+Eligible phases:
+  Phase1: Phase 1: Setup 

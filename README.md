@@ -1,112 +1,168 @@
-# imp - Cursor Implementation Tool **Version 0.1.0**
+# IMP (Implementation Management Platform)
 
-imp is a tool that automatically implements project specifications by spawning Cursor AI agents to work on different phases of your project.
+A tool for managing software implementation projects using AI agents and structured workflows.
 
-## Quick Start
+## Setup
 
-### 1. Setup
+### Option 1: One-Liner Installation (Recommended)
 
 ```bash
-# Create a bin directory in your home folder
-mkdir -p ~/bin
+curl -sSL https://raw.githubusercontent.com/brooksflannery/imp/main/install-one-liner.sh | bash
+```
 
-# Create the imp wrapper script
-cat > ~/bin/imp << 'EOF'
-#!/bin/bash
-cd /Users/brooksflannery/Documents/GitHub/cursor-global
-./spawner.sh "$@"
-EOF
+This single command will:
+- Clone the IMP repository to `~/.imp`
+- Detect your shell (zsh/bash)
+- Add the `imp` alias to your shell config
+- Make IMP available immediately
 
-chmod +x ~/bin/imp
+### Option 2: Manual Installation
 
-# Add ~/bin to your PATH
-echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
+```bash
+# Clone the repository
+git clone https://github.com/brooksflannery/imp.git
+# The clone creates a directory called "imp" - navigate into it
+cd imp
+
+# Run the installer
+./install.sh
+```
+
+This will automatically:
+- Detect your shell (zsh/bash)
+- Add the `imp` alias to your shell config
+- Validate the installation
+
+### Option 2: Manual Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/brooksflannery/imp.git
+# The clone creates a directory called "imp" - navigate into it
+cd imp
+
+# Add alias to your shell config (replace with your actual path)
+echo 'alias imp="/path/to/imp/imp.sh"' >> ~/.zshrc
+
+# Reload shell config
 source ~/.zshrc
-
-### Customize the agent prompt (optional)
-
-You can modify the implementation agent behavior by editing `implementation_agent_prompt.txt`. For example, to change the git workflow:
-
-Common customizations:
-- Change the git branch naming pattern
-- Modify commit message format
-- Adjust the git workflow commands
 ```
-
-### 2. Format your spec files
-
-Create a `.mdx` file with your project phases and tasks:
-
-```markdown
-
-### Phase 1: Setup
-- [ ] Create project structure
-- [ ] Set up dependencies
-
-### Phase 2a: Backend
-- [ ] Create API endpoints
-- [ ] Set up database
-
-### Phase 2b: Frontend
-- [ ] Build UI components
-- [ ] Connect to API
-
-### Phase 3: Deploy
-- [ ] Test everything
-- [ ] Deploy to production
-```
-
-### 3. Run imp
-
-```bash
-imp "my-project.mdx"
-```
-
-That's it! `imp` will automatically:
-- Detect which phases are ready to run
-- Spawn AI agents for each phase
-- Have agents work through tasks and mark them complete
-- Move to the next phase when ready
-
-## How it works
-
-### Phase numbering
-- **Sequential phases** (1, 2, 3): Must complete in order
-- **Parallel phases** (2a, 2b, 2c): Can run at the same time
-- **Dependencies**: All Phase X* subphases must finish before Phase X+1
-
-### What happens
-1. `imp` reads your spec file
-2. Finds incomplete phases that are ready to run
-3. Opens Cursor chat tabs for each phase
-4. AI agents work through tasks, marking them `[x]` when done
-5. When a phase completes, the next phase starts automatically
 
 ## Usage
 
-### Basic
+Once installed, you can use `imp` from any project directory:
+
 ```bash
-imp "project.mdx"
+# Initialize or continue implementation from a spec file
+imp my-feature-spec.md
+
+# Show help
+imp --help
+
+# Check version
+imp version
+
+# Check environment
+imp check
+
+# Uninstall IMP
+imp uninstall
 ```
 
-### Manual control
+## How It Works
+
+1. **Specification**: Start with a technical specification file (markdown)
+2. **Analysis**: IMP analyzes the spec and generates an implementation plan
+3. **Phases**: The plan is broken into phases with dependencies
+4. **Agents**: AI agents are spawned to work on eligible phases
+5. **Progress**: Track and manage implementation progress
+
+## Example Workflow
+
 ```bash
-# Run specific phases
-imp "project.mdx" "Phase 2a: Backend" "Phase 2b: Frontend"
+# 1. Create a spec file
+cat > my-feature.md << EOF
+# My Feature Specification
+
+## Overview
+A simple feature that does X, Y, and Z.
+
+## Requirements
+- [ ] Requirement 1
+- [ ] Requirement 2
+- [ ] Requirement 3
+EOF
+
+# 2. Start implementation
+imp my-feature.md
+
+# 3. Check status
+imp status .imp/imp-my-feature/imp-plan.md
+
+# 4. Mark phases complete
+imp finish "Phase 1: Setup" .imp/imp-my-feature
 ```
 
 ## Requirements
 
-- macOS
-- Cursor (AI code editor)
-- Terminal accessibility permissions
+- **macOS** (for Cursor integration)
+- **Git** repository (for tracking progress)
+- **Cursor** (for AI agent spawning)
+- **Basic shell tools**: jq, awk, sed, grep
+
+## File Structure
+
+```
+imp/
+├── imp.sh              # Main entry point
+├── imp-init.sh         # Initialization script
+├── imp-plan.sh         # Plan generation script
+├── imp-spawner.sh      # Agent spawning script
+├── imp-finish.sh       # Phase completion script
+├── install.sh          # Installation script
+├── imp-agent.prompt    # Agent prompt template
+├── imp-plan-prompt.txt # Plan generation prompt
+└── README.md           # This file
+```
 
 ## Troubleshooting
 
-- **"Script not executable"**: Run `chmod +x ~/bin/imp`
-- **"Cursor not found"**: Make sure Cursor is installed
-- **"Permission denied"**: Grant Terminal accessibility permissions
-- **Chat conflicts**: Close old Cursor chat tabs before running `imp`
+### "No such file or directory" error
+Make sure you ran the installer or set up the alias correctly. The alias should point to the absolute path of `imp.sh`.
 
-## Issues
-- Concurrent phases currently block each other's ability to edit the spec document.
+### "Not in a git repository" error
+IMP requires a git repository to track progress. Initialize git in your project:
+```bash
+git init
+```
+
+### Cursor not found
+Make sure Cursor is installed and accessible. IMP uses Cursor for AI agent spawning.
+
+## Uninstalling
+
+To remove IMP from your system:
+
+```bash
+imp uninstall
+```
+
+This will:
+- Remove the `imp` alias from your shell config
+- Delete the IMP installation directory (`~/.imp`)
+- Remove any other IMP binaries found
+- Create backups of modified config files
+
+You can always reinstall later using the one-liner installation command.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## License
+
+[Add your license here] 

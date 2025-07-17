@@ -1,0 +1,24 @@
+Parsing: test-4-complex-dependencies.md
+
+Parsed phases:
+  Phase1: Phase 1: Foundation (incomplete)
+  Phase2: Phase 2: Core (incomplete)
+  Phase3: Phase 3: UI (incomplete)
+  Phase4: Phase 4: API (incomplete)
+  Phase5: Phase 5: Components (incomplete)
+  Phase6: Phase 6: Integration (incomplete)
+  Phase7: Phase 7: Testing (incomplete)
+  Phase8: Phase 8: Deploy (incomplete)
+
+Dependencies:
+  Phase2 depends on Phase1
+  Phase3 depends on Phase1
+  Phase4 depends on Phase2
+  Phase5 depends on Phase3
+  Phase6 depends on Phase4
+  Phase6 depends on Phase5
+  Phase7 depends on Phase6
+  Phase8 depends on Phase7
+
+Eligible phases:
+  Phase1: Phase 1: Foundation 

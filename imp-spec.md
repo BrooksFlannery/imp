@@ -19,16 +19,20 @@ graph LR
     Main -->|Check exists| Decision{IMP repo exists?}
     Decision -->|No| Init[imp-init.sh]
     Decision -->|Yes| Spawner[imp-spawner.sh]
-    Init -->|Analyzes spec + project| Plan[imp-plan.md]
-    Init -->|Creates| Phases[phase-*.md files]
-    Init -->|Auto calls| Spawner
-    Spawner -->|Parses| Plan
+    Init -->|Creates| Dir[.imp/imp-specname/]
+    Init -->|Calls| PlanAgent[Combined Plan Generation Agent]
+    PlanAgent -->|Analyzes| Spec[spec.md]
+    PlanAgent -->|Creates| Analysis[analysis.json]
+    PlanAgent -->|Creates| Diagram[imp-plan.md]
+    PlanAgent -->|Creates| PhaseFile[phase-*.md checklist]
+    PlanAgent -->|Calls| Spawner
+    Spawner -->|Parses| Diagram
     Spawner -->|Spawns| Agent[Cursor Agent]
     
     Agent -->|Updates| PhaseFile[phase-*.md checklist]
     Agent -->|Tells user| Finish[imp-finish.sh]
     Finish -->|Git operations| Git[Git Repository]
-    Finish -->|Updates| Plan
+    Finish -->|Updates| Diagram
     Finish -->|Calls| Spawner
 ```
 
@@ -50,11 +54,9 @@ imp.sh <spec-file-path>
 ```bash
 imp-init.sh <spec-file-path>
 ```
-- Analyzes spec.md and current project state
-- Generates implementation plan with phases and dependencies
-- Creates imp-plan.md with Mermaid flowchart
-- Creates phase-*.md files from spec phases
-- Automatically calls imp-spawner.sh to start first wave of agents
+- Creates .imp directory if it doesn't exist
+- Creates imp-specname subdirectory based on spec filename
+- Spawns combined plan generation agent to analyze spec and create implementation plan
 - Returns: 0 on success, 1 on failure
 
 #### imp-spawner.sh
@@ -84,59 +86,66 @@ imp-finish.sh <phase-name>
 - `:::complete` - Phase finished and approved
 - `:::failed` - Phase failed (unused for now)
 
-## 4. Phases & Tasks
+### Cursor Agent Spawning System
+The IMP system uses a sophisticated agent spawning mechanism to automate Cursor IDE interactions:
 
-### Phase 1: Core Script Development
-- [ ] Create imp-init.sh with spec analysis logic
-- [ ] Implement project state analysis
-- [ ] Create implementation plan generation
-- [ ] Implement Mermaid diagram generation from plan
-- [ ] Create phase file template system
-- [ ] Add directory structure creation
-- [ ] Implement spec validation
-- [ ] Add error handling and logging
+#### Agent Prompt Templates
+- `imp-plan-prompt.txt` - Combined plan generation agent for analysis, mermaid, and phase file creation
+- `implementation_agent_prompt.txt` - Individual phase implementation agent
+- Template-based prompts with variable substitution
+- Uses `{SPEC_NAME}` and `{PHASE_NAME}` placeholders
+- Provides clear instructions for agent behavior and completion workflow
 
-### Phase 2a: Spawner Implementation
-- [ ] Create imp-spawner.sh core spawning logic
-- [ ] Implement Mermaid parsing with regex
-- [ ] Add dependency resolution algorithm
-- [ ] Create phase eligibility checking
-- [ ] Implement status class updates
-- [ ] Add concurrent phase safety checks
-- [ ] Create Cursor agent spawning
-- [ ] Add agent prompt generation
+#### Spawner Script (`spawner.sh`)
+- Uses AppleScript to automate Cursor IDE
+- Creates new chat tabs programmatically
+- Sets clipboard with customized agent prompts
+- Supports both manual phase specification and automatic phase detection
+- Handles multiple concurrent agents with proper timing
 
-### Phase 2b: Git Integration System
-- [ ] Create imp-finish.sh git operations
-- [ ] Implement branch creation logic
-- [ ] Add change detection and staging
-- [ ] Create commit message generation
-- [ ] Implement push to remote
-- [ ] Add conflict detection
-- [ ] Create rollback mechanisms
-- [ ] Add git status validation
+#### Key Features:
+- **Dynamic Prompt Generation**: Substitutes variables in prompt templates
+- **Automated Cursor Control**: Uses `osascript` to control Cursor IDE
+- **Clipboard Integration**: Uses `pbcopy`/`pbpaste` for prompt transfer
+- **Concurrent Agent Management**: Spawns multiple agents in separate tabs
+- **Phase Detection**: Can automatically detect incomplete phases
+- **Logging**: Comprehensive logging for debugging and monitoring
 
-### Phase 3: User Interface Integration
-- [ ] Create Cursor UI approval dialog
-- [ ] Implement change summary generation
-- [ ] Add approval workflow integration
-- [ ] Create progress visualization
-- [ ] Implement real-time status updates
-- [ ] Add manual phase management
-- [ ] Create error reporting interface
-- [ ] Add user preference configuration
+## 4. Output Format Requirements
 
-### Phase 4: Testing and Validation
-- [ ] Create unit tests for all scripts
-- [ ] Implement integration test suite
-- [ ] Add Mermaid parsing validation
-- [ ] Create git workflow testing
-- [ ] Implement agent isolation testing
-- [ ] Add concurrent execution testing
-- [ ] Create error scenario testing
-- [ ] Add performance benchmarking
+### Combined Plan Generation Agent Output
+The combined plan generation agent (`imp-plan-prompt.txt`) creates two essential files:
 
-## 5. Deployment
+#### 1. Analysis JSON (.imp/imp-specname/analysis.json)
+```json
+{
+  "phases": [
+    {
+      "id": "1",
+      "title": "Phase Title",
+      "dependencies": [],
+      "items": [
+        "Item 1 description",
+        "Item 2 description",
+        "Item 3 description"
+      ]
+    }
+  ]
+}
+```
+
+#### 2. Mermaid Diagram (.imp/imp-specname/imp-plan.md)
+**CRITICAL**: Contains ONLY the Mermaid diagram wrapped in proper mermaid code fences:
+```mermaid
+flowchart TD
+  Phase1[Phase 1: Title]:::incomplete --> Phase2[Phase 2: Title]:::incomplete
+  %% Class Definitions
+  classDef incomplete fill:#fefcbf,stroke:#b7791f,stroke-width:2px,color:#744210
+  classDef inProgress fill:#bee3f8,stroke:#2b6cb0,stroke-width:2px,color:#2c5282
+  classDef complete fill:#c6f6d5,stroke:#2f855a,stroke-width:2px,color:#22543d
+```
+
+## 6. Deployment
 
 ### Prerequisites
 - Git repository with remote configured
@@ -150,7 +159,7 @@ imp-finish.sh <phase-name>
 3. Test with sample specification
 4. Configure Cursor agent permissions
 
-## 6. Success Criteria
+## 7. Success Criteria
 
 ### Functional Requirements
 - [ ] Successfully analyze spec and create implementation plan
