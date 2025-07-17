@@ -190,9 +190,8 @@ main() {
     # Check for other installations
     check_other_installations
     
-    # Reload shell config to remove alias from current session
-    log "Reloading shell configuration..."
-    source "$config_file" 2>/dev/null || true
+    # Note: Shell config changes will take effect in new terminal sessions
+    log "Shell config updated - restart terminal or run 'source $config_file' to apply changes"
     
     echo ""
     success "IMP has been uninstalled successfully!"
