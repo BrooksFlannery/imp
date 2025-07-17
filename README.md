@@ -47,8 +47,14 @@ imp --help
 # Check version
 imp version
 
-# Check environment
+# Check environment and dependencies
 imp check
+
+# Show implementation status
+imp status .imp/imp-my-feature/imp-plan.md
+
+# List eligible phases
+imp list .imp/imp-my-feature/imp-plan.md
 
 # Uninstall IMP
 imp uninstall
@@ -61,6 +67,7 @@ imp uninstall
 3. **Phases**: The plan is broken into phases with dependencies
 4. **Agents**: AI agents are spawned to work on eligible phases
 5. **Progress**: Track and manage implementation progress
+6. **Git Integration**: Optional automatic git commits and pushes for completed phases
 
 ## Example Workflow
 
@@ -91,9 +98,9 @@ imp finish "Phase 1: Setup" .imp/imp-my-feature
 ## Requirements
 
 - **macOS** (for Cursor integration)
-- **Git** repository (for tracking progress)
 - **Cursor** (for AI agent spawning)
-- **Basic shell tools**: jq, awk, sed, grep
+- **Basic shell tools**: jq, awk, sed, grep, osascript, pbcopy
+- **Git repository** (optional, for tracking progress and automatic commits)
 
 ## File Structure
 
@@ -109,6 +116,10 @@ imp/
 ├── install-one-liner.sh # One-liner installer
 ├── imp-agent.prompt    # Agent prompt template
 ├── imp-plan-prompt.txt # Plan generation prompt
+├── imp-spec.md         # IMP specification
+├── DEVELOPMENT.md      # Development notes and roadmap
+├── mock-spec.md        # Example specification
+├── tests/              # Test files
 └── README.md           # This file
 ```
 
@@ -117,11 +128,10 @@ imp/
 ### "No such file or directory" error
 Make sure you ran the installer or set up the alias correctly. The alias should point to the absolute path of `imp.sh`.
 
-### "Not in a git repository" error
-IMP requires a git repository to track progress. Initialize git in your project:
-```bash
-git init
-```
+### "Not in a git repository" warning
+IMP will ask if you want to set up git for tracking progress. You can:
+- Choose "y" to set up git (recommended for automatic commits)
+- Choose "n" to continue without git integration
 
 ### Cursor not found
 Make sure Cursor is installed and accessible. IMP uses Cursor for AI agent spawning.
